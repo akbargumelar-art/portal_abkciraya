@@ -78,7 +78,7 @@ const triggerWebhook = (payload: unknown) => {
 };
 
 // --- Connection Settings Services ---
-const API_BASE_URL = 'http://localhost:3001/api'; // The address of your backend server
+const API_BASE_URL = '/api'; // Use a relative path for the backend
 
 export const testConnection = async (settings: unknown): Promise<{ success: boolean; message: string }> => {
   console.log('Sending test connection request to backend:', settings);
