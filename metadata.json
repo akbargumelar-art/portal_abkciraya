@@ -1,0 +1,7 @@
+{
+  "name": "The Horse Wind - Agrabudi Komunika Dashboard",
+  "description": "An internal operational dashboard for PT Agrabudi Komunika to digitize and automate sales and team performance management processes.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
