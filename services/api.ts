@@ -117,26 +117,38 @@ export const deleteUser = async (userId: string): Promise<{ success: boolean }> 
     return Promise.resolve({ success: true });
 };
 
-// --- Connection Settings Services (Mocked) ---
+// --- Connection Settings Services (Connecting to Live Backend) ---
 export const testConnection = async (settings: any): Promise<{ success: boolean; message: string }> => {
-    await simulateDelay(1000);
-    // Simulate success if all fields are present. The component sends a dummy password if empty.
-    if (settings.host && settings.port && settings.username && settings.password && settings.dbname) {
-        console.log('API: testConnection successful', settings);
-        return Promise.resolve({ success: true, message: 'Koneksi berhasil! Database dapat diakses.' });
-    } else {
-        console.log('API: testConnection failed', settings);
-        return Promise.resolve({ success: false, message: 'Koneksi gagal. Periksa kembali detail koneksi Anda.' });
+    console.log('API: Calling backend to test connection...', settings);
+    const response = await fetch(`${API_BASE_URL}/test-connection`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        // Throw an error with the message from the backend
+        throw new Error(data.message || `Server responded with status ${response.status}`);
     }
+    return data;
 };
 
 export const saveConnectionSettings = async (settings: any): Promise<{ success: boolean; message: string }> => {
-    await simulateDelay(1000);
-    if (settings.host && settings.port && settings.username && settings.password && settings.dbname) {
-        console.log('API: saveConnectionSettings successful', settings);
-        return Promise.resolve({ success: true, message: 'Pengaturan koneksi berhasil disimpan.' });
-    } else {
-        console.log('API: saveConnectionSettings failed', settings);
-        return Promise.resolve({ success: false, message: 'Gagal menyimpan. Pastikan semua field terisi.' });
+    console.log('API: Calling backend to save connection settings...', settings);
+    const response = await fetch(`${API_BASE_URL}/save-connection`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+    });
+    
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || `Server responded with status ${response.status}`);
     }
+    return data;
 };
