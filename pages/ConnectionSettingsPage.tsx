@@ -9,7 +9,7 @@ const ConnectionSettingsPage: React.FC = () => {
         port: '52306',
         username: 'akbar',
         password: '',
-        dbname: 'sales_data',
+        dbname: 'abk_portalciraya',
     });
     const [isTesting, setIsTesting] = useState(false);
     const [isSaving, setIsSaving] = useState(false);

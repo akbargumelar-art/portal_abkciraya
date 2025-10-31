@@ -1,3 +1,4 @@
+
 import { UserRole, MenuItem } from './types';
 import { 
     HomeIcon,
@@ -14,7 +15,8 @@ import {
     CreditCardIcon,
     FeeIcon,
     FlagIcon,
-    SparklesIcon
+    SparklesIcon,
+    SettingsIcon
 } from './components/icons';
 
 const unavailable = (featureName: string) => `/feature-unavailable?feature=${encodeURIComponent(featureName.toLowerCase().replace(/\s/g, '-'))}`;
@@ -153,5 +155,13 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'User Management',
     icon: UsersIcon,
     requiredRoles: [UserRole.AdminSuper],
+  },
+  {
+    name: 'Pengaturan',
+    icon: SettingsIcon,
+    requiredRoles: [UserRole.AdminSuper],
+     children: [
+        { path: '/admin/connection-settings', name: 'Koneksi Database', requiredRoles: [UserRole.AdminSuper] },
+     ]
   },
 ];
