@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   const pageTitle = getPageTitle(location.pathname);
 
   return (
-    <header className="flex-shrink-0 flex items-center justify-between h-[72px] px-6 bg-white border-b border-gray-200">
+    <header className="flex-shrink-0 flex items-center justify-between h-18 px-6 bg-white border-b border-gray-200">
       <div className="flex items-center">
          <button onClick={() => setSidebarOpen(true)} className="text-gray-500 focus:outline-none lg:hidden mr-4">
              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

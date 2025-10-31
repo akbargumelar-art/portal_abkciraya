@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -100,14 +101,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, isSideba
     .filter((item): item is MenuItem => item !== null);
 
   const baseLinkClasses = "flex items-center w-full p-3 text-sm text-gray-500 rounded-lg transition-colors duration-200 hover:bg-red-50 hover:text-red-600 group";
-  const activeLinkClasses = "bg-[#FFEAEA] text-[#F13B4B] font-semibold";
+  const activeLinkClasses = "bg-red-50 text-red-600 font-semibold";
 
   return (
     <>
       <div className={`fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`} onClick={() => setSidebarOpen(false)}></div>
       <div ref={sidebarRef} className={`bg-white text-gray-800 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 flex flex-col fixed inset-y-0 left-0 lg:relative transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
         
-        <div className={`flex items-center h-[72px] px-4 mb-4 flex-shrink-0 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div className={`flex items-center h-18 px-4 mb-4 flex-shrink-0 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           <Link to="/dashboard" className={`flex items-center space-x-2 overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'w-0' : 'w-auto'}`}>
             <LogoIcon className="w-8 h-8 text-red-600 flex-shrink-0" />
             <span className="text-lg font-bold text-gray-800 whitespace-nowrap">Portal Cirebon Raya</span>
