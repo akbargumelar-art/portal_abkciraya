@@ -13,6 +13,7 @@ export { default as DatabaseIcon } from './DatabaseIcon';
 export { default as EyeIcon } from './EyeIcon';
 export { default as SortIcon } from './SortIcon';
 export { default as PencilIcon } from './PencilIcon';
+export { default as TrashIcon } from './TrashIcon';
 export { default as ListOrderedIcon } from './ListOrderedIcon';
 export { default as BoxIcon } from './BoxIcon';
 export { default as CurrencyDollarIcon } from './DollarSignIcon';
@@ -36,6 +37,7 @@ export { default as ClipboardDocumentCheckIcon } from './ClipboardDocumentCheckI
 // export { default as TruckIcon } from './TruckIcon'; // Replaced by BoxIcon for 'DOA'
 export { default as CheckCircleIcon } from './CheckCircleIcon';
 export { default as XCircleIcon } from './XCircleIcon';
+export { default as CameraIcon } from './CameraIcon';
 
 // Icons to match image
 export { default as CreditCardIcon } from './CreditCardIcon';

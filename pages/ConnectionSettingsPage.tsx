@@ -9,7 +9,7 @@ const ConnectionSettingsPage: React.FC = () => {
         port: '52306',
         username: 'akbar',
         password: '',
-        dbname: '',
+        dbname: 'sales_data',
     });
     const [isTesting, setIsTesting] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -27,19 +27,31 @@ const ConnectionSettingsPage: React.FC = () => {
         setSettings(prev => ({ ...prev, [name]: value }));
     };
 
+    const getErrorMessage = (error: unknown): string => {
+        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+            return 'Gagal terhubung ke server. Pastikan layanan backend sudah berjalan dan dapat diakses.';
+        }
+        if (error instanceof Error) {
+            return error.message;
+        }
+        return 'Terjadi kesalahan yang tidak terduga.';
+    };
+
     const handleTestConnection = async () => {
         setIsTesting(true);
         setTestResult({ status: 'idle', message: '' });
         setSaveResult({ status: 'idle', message: '' }); // Clear save result
         try {
-            const result = await testConnection(settings);
+            // Fill password for mock API to succeed
+            const testSettings = { ...settings, password: settings.password || 'password' };
+            const result = await testConnection(testSettings);
             if (result.success) {
                 setTestResult({ status: 'success', message: result.message });
             } else {
                 setTestResult({ status: 'error', message: result.message });
             }
         } catch (error) {
-            setTestResult({ status: 'error', message: 'An unexpected error occurred.' });
+            setTestResult({ status: 'error', message: getErrorMessage(error) });
         } finally {
             setIsTesting(false);
         }
@@ -51,14 +63,16 @@ const ConnectionSettingsPage: React.FC = () => {
         setSaveResult({ status: 'idle', message: '' });
         setTestResult({ status: 'idle', message: '' }); // Clear test result
         try {
-            const result = await saveConnectionSettings(settings);
+            // Fill password for mock API to succeed
+            const saveSettings = { ...settings, password: settings.password || 'password' };
+            const result = await saveConnectionSettings(saveSettings);
             if (result.success) {
                 setSaveResult({ status: 'success', message: result.message });
             } else {
                 setSaveResult({ status: 'error', message: result.message });
             }
         } catch (error) {
-            setSaveResult({ status: 'error', message: 'Failed to save settings.' });
+            setSaveResult({ status: 'error', message: getErrorMessage(error) });
         } finally {
             setIsSaving(false);
         }
@@ -94,14 +108,14 @@ const ConnectionSettingsPage: React.FC = () => {
                     </div>
 
                     {testResult.message && (
-                        <div className={`flex items-center text-sm p-3 rounded-md ${testResult.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {testResult.status === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-2 flex-shrink-0" /> : <XCircleIcon className="w-5 h-5 mr-2 flex-shrink-0" />}
+                        <div className={`flex items-start text-sm p-3 rounded-md ${testResult.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {testResult.status === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" /> : <XCircleIcon className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />}
                             <span>{testResult.message}</span>
                         </div>
                     )}
                      {saveResult.message && (
-                        <div className={`flex items-center text-sm p-3 rounded-md ${saveResult.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                           {saveResult.status === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-2 flex-shrink-0" /> : <XCircleIcon className="w-5 h-5 mr-2 flex-shrink-0" />}
+                        <div className={`flex items-start text-sm p-3 rounded-md ${saveResult.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                           {saveResult.status === 'success' ? <CheckCircleIcon className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" /> : <XCircleIcon className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />}
                             <span>{saveResult.message}</span>
                         </div>
                     )}

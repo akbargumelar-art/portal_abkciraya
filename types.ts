@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export enum UserRole {
@@ -14,9 +13,16 @@ export enum UserRole {
 export interface User {
   id: string;
   name: string;
+  username: string;
   role: UserRole;
   avatarUrl?: string;
 }
+
+// Type for form submission/creation
+export type UserFormData = Omit<User, 'id'> & {
+  password?: string;
+};
+
 
 export interface MenuItem {
   path?: string;

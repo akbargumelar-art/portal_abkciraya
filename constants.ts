@@ -3,7 +3,7 @@ import {
     HomeIcon,
     GlobeAltIcon,
     StorefrontIcon,
-    DocumentTextIcon,
+    CameraIcon,
     CloudArrowUpIcon,
     UsersIcon,
     ClipboardDocumentCheckIcon,
@@ -119,19 +119,19 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     name: 'Dokumentasi',
-    icon: DocumentTextIcon,
-    requiredRoles: [UserRole.AdminInput, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C],
+    icon: CameraIcon,
+    requiredRoles: [UserRole.AdminSuper, UserRole.AdminInput, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C],
     children: [
-      { path: '/documentation', name: 'Form Kunjungan', requiredRoles: [UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
-      { path: '/input-form', name: 'Input Form', requiredRoles: [UserRole.AdminInput, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
-      { path: '/video', name: 'Video Roleplay', requiredRoles: [UserRole.SalesforceIDS, UserRole.DirectSalesD2C, UserRole.SupervisorIDS, UserRole.SupervisorD2C] },
+      { path: '/documentation', name: 'Form Kunjungan', requiredRoles: [UserRole.AdminSuper, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
+      { path: '/input-form', name: 'Input Form', requiredRoles: [UserRole.AdminSuper, UserRole.AdminInput, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
+      { path: '/video', name: 'Video Roleplay', requiredRoles: [UserRole.AdminSuper, UserRole.SalesforceIDS, UserRole.DirectSalesD2C, UserRole.SupervisorIDS, UserRole.SupervisorD2C] },
     ]
   },
   {
     path: '/complaint',
     name: 'Komplain',
     icon: ComplaintIcon,
-    requiredRoles: [UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C],
+    requiredRoles: [UserRole.AdminSuper, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C],
   },
   {
     path: '/pop-monitoring',
@@ -146,7 +146,6 @@ export const MENU_ITEMS: MenuItem[] = [
      children: [
         { path: '/admin/data-upload', name: 'Upload Database', requiredRoles: [UserRole.AdminSuper] },
         { path: '/admin/data-upload/manage', name: 'Manajemen File Data', requiredRoles: [UserRole.AdminSuper] },
-        { path: '/admin/data-upload/connection', name: 'Pengaturan Koneksi', requiredRoles: [UserRole.AdminSuper] },
      ]
   },
    {

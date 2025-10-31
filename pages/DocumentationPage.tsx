@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import ExampleForm from './ExampleForm';
@@ -10,8 +9,9 @@ const DocumentationPage: React.FC = () => {
         user?.role === UserRole.DirectSalesD2C ? 'd2c' : 'ids'
     );
 
-    const isIDS = user?.role === UserRole.SalesforceIDS || user?.role === UserRole.SupervisorIDS;
-    const isD2C = user?.role === UserRole.DirectSalesD2C || user?.role === UserRole.SupervisorD2C;
+    const isAdmin = user?.role === UserRole.AdminSuper;
+    const isIDS = isAdmin || user?.role === UserRole.SalesforceIDS || user?.role === UserRole.SupervisorIDS;
+    const isD2C = isAdmin || user?.role === UserRole.DirectSalesD2C || user?.role === UserRole.SupervisorD2C;
 
     const renderTabs = () => (
         <div className="mb-6 border-b border-gray-200">

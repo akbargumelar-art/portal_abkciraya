@@ -17,10 +17,6 @@ const AdminPage: React.FC = () => {
                     <h2 className="text-xl font-semibold mb-2 text-red-700">Data Upload Center</h2>
                     <p className="text-gray-600">Download templates and upload new data files.</p>
                 </Link>
-                <Link to="/admin/db-settings" className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow block">
-                    <h2 className="text-xl font-semibold mb-2 text-red-700">Database Settings</h2>
-                    <p className="text-gray-600">Configure and test the external database connection.</p>
-                </Link>
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
                     <h2 className="text-xl font-semibold mb-2 text-red-700">Dynamic Form Builder</h2>
                     <p className="text-gray-600">Build and deploy custom forms for data collection without writing code.</p>

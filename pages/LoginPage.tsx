@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
             <p className="text-red-200 mt-1">PT Agrabudi Komunika</p>
           </div>
           <div className="my-8">
-            <h2 className="text-4xl font-extrabold leading-tight mb-3">Selamat Datang Kembali!</h2>
+            <h2 className="text-4xl font-extrabold leading-tight mb-3">Selamat Datang</h2>
             <div className="w-20 h-1 bg-white mb-4"></div>
             <p className="text-red-100/90">
               Solusi satu atap Anda untuk manajemen penjualan dan kinerja tim.

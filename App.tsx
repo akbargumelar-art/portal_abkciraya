@@ -18,7 +18,6 @@ import OutletRegisterPage from './pages/OutletRegisterPage';
 import SellThruNotaPage from './pages/SellThruNotaPage';
 import UserManagementPage from './pages/UserManagementPage';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
-import ConnectionSettingsPage from './pages/ConnectionSettingsPage';
 import FeatureUnavailablePage from './pages/FeatureUnavailablePage';
 
 const App: React.FC = () => {
@@ -78,11 +77,9 @@ const AppRoutes: React.FC = () => {
             <>
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/admin/user-management" element={<UserManagementPage />} />
-              <Route path="/admin/data-upload/connection" element={<ConnectionSettingsPage />} />
               {/* Other admin routes can point to the unavailable page */}
               <Route path="/admin/data-upload" element={<FeatureUnavailablePage />} />
               <Route path="/admin/data-upload/manage" element={<FeatureUnavailablePage />} />
-              <Route path="/admin/db-settings" element={<FeatureUnavailablePage />} />
             </>
           )}
 

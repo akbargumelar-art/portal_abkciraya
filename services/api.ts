@@ -1,6 +1,18 @@
-import { User, Outlet, OutletData } from '../types';
+import { User, Outlet, OutletData, UserRole, UserFormData } from '../types';
 
 const API_BASE_URL = '/api'; // Proxy to your backend server
+
+// --- Mock Data ---
+let mockUsers: User[] = [
+    { id: 'user01', name: 'Agus Purnomo', username: 'agus.purnomo', role: UserRole.AdminSuper, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
+    { id: 'user02', name: 'Budi Input', username: 'budi.input', role: UserRole.AdminInput, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
+    { id: 'user03', name: 'Cici Manager', username: 'cici.manager', role: UserRole.Manager, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
+    { id: 'user04', name: 'Dedi SPV IDS', username: 'dedi.spvids', role: UserRole.SupervisorIDS, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
+    { id: 'user05', name: 'Eka SPV D2C', username: 'eka.spvd2c', role: UserRole.SupervisorD2C, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
+    { id: 'user06', name: 'Fani Salesforce', username: 'fani.salesforce', role: UserRole.SalesforceIDS, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
+    { id: 'user07', name: 'Gita Direct Sales', username: 'gita.directsales', role: UserRole.DirectSalesD2C, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
+];
+
 
 // Helper function for authenticated requests
 const authedFetch = async (url: string, options: RequestInit = {}) => {
@@ -26,54 +38,25 @@ const authedFetch = async (url: string, options: RequestInit = {}) => {
 // --- Authentication ---
 export const login = async (username: string, password: string): Promise<{ user: User; token: string } | null> => {
     console.log(`Attempting login for: ${username}`);
-    // This is a mock API call. In a real scenario, this would be a POST request to a backend.
-    // For now, we simulate a successful login for any of the previous mock users for demonstration purposes.
-    const validUsernames = ['agus.purnomo', 'budi.input', 'cici.manager', 'dedi.spvids', 'eka.spvd2c', 'fani.salesforce', 'gita.directsales'];
-    if (validUsernames.includes(username.toLowerCase()) && password) {
+    const user = mockUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    if (user && password) { // In real app, password would be checked against a hash
         console.log('Simulating successful login');
-        const userMap: Record<string, User> = {
-          'agus.purnomo': { id: 'user01', name: 'Agus Purnomo', role: 'Admin Super' as any, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
-          'budi.input': { id: 'user02', name: 'Budi Input', role: 'Admin Input Data' as any, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
-          'cici.manager': { id: 'user03', name: 'Cici Manager', role: 'Manager' as any, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
-          'dedi.spvids': { id: 'user04', name: 'Dedi SPV IDS', role: 'Supervisor (IDS)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
-          'eka.spvd2c': { id: 'user05', name: 'Eka SPV D2C', role: 'Supervisor Direct Sales (D2C)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
-          'fani.salesforce': { id: 'user06', name: 'Fani Salesforce', role: 'Salesforce (IDS)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
-          'gita.directsales': { id: 'user07', name: 'Gita Direct Sales', role: 'Direct Sales (D2C)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
-        }
-        return Promise.resolve({ user: userMap[username.toLowerCase()], token: 'fake-jwt-token-for-demo' });
+        return Promise.resolve({ user, token: 'fake-jwt-token-for-demo' });
     } else {
         return Promise.reject(new Error('Invalid credentials'));
     }
-    /*
-    // REAL IMPLEMENTATION EXAMPLE:
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-    });
-    if (!response.ok) throw new Error('Login failed');
-    return response.json();
-    */
 };
 
 export const logout = (): void => {
     console.log('User logged out');
-    // In a real app, you might also call a backend endpoint to invalidate the token
-    // authedFetch('/auth/logout', { method: 'POST' });
 };
 
 // --- Data Services ---
 export const getOutlets = (): Promise<OutletData[]> => {
-    // This function would fetch all outlet data from the backend.
-    // Since we don't have a backend, we return an empty array to show the "no data" state.
     console.log("Fetching outlets... (simulated - returning empty array)");
     return Promise.resolve([]);
-    /* 
-    // REAL IMPLEMENTATION EXAMPLE:
-    return authedFetch('/outlets');
-    */
 };
-
 
 // --- Form Services ---
 export const lookupOutlet = (outletId: string): Promise<Outlet | null> => {
@@ -87,17 +70,73 @@ export const submitVisitForm = (formData: unknown): Promise<{ success: boolean; 
     });
 };
 
-// --- Connection Settings Services ---
-export const testConnection = async (settings: unknown): Promise<{ success: boolean; message: string }> => {
-  return authedFetch('/admin/connections/test', {
-    method: 'POST',
-    body: JSON.stringify(settings)
-  });
+// --- User Management Services (Mocked) ---
+const simulateDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const getUsers = async (): Promise<User[]> => {
+    await simulateDelay(500);
+    console.log('API: getUsers called', mockUsers);
+    return Promise.resolve([...mockUsers]);
 };
 
-export const saveConnectionSettings = async (settings: unknown): Promise<{ success: boolean; message: string }> => {
-  return authedFetch('/admin/connections/save', {
-    method: 'POST',
-    body: JSON.stringify(settings)
-  });
+export const addUser = async (userData: UserFormData): Promise<User> => {
+    await simulateDelay(500);
+    const newUser: User = {
+        id: `user${Date.now()}`,
+        ...userData,
+    };
+    mockUsers.push(newUser);
+    console.log('API: addUser called', newUser);
+    return Promise.resolve(newUser);
+};
+
+export const updateUser = async (userId: string, userData: Partial<UserFormData>): Promise<User> => {
+    await simulateDelay(500);
+    const userIndex = mockUsers.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+        return Promise.reject(new Error('User not found'));
+    }
+    // Don't update password if it's empty
+    const { password, ...restOfData } = userData;
+    const updatedData = { ...restOfData };
+    
+    const updatedUser = { ...mockUsers[userIndex], ...updatedData };
+    mockUsers[userIndex] = updatedUser;
+    console.log('API: updateUser called', updatedUser);
+    return Promise.resolve(updatedUser);
+};
+
+export const deleteUser = async (userId: string): Promise<{ success: boolean }> => {
+    await simulateDelay(500);
+    const initialLength = mockUsers.length;
+    mockUsers = mockUsers.filter(u => u.id !== userId);
+    if (mockUsers.length === initialLength) {
+        return Promise.reject(new Error('User not found'));
+    }
+    console.log('API: deleteUser called for', userId);
+    return Promise.resolve({ success: true });
+};
+
+// --- Connection Settings Services (Mocked) ---
+export const testConnection = async (settings: any): Promise<{ success: boolean; message: string }> => {
+    await simulateDelay(1000);
+    // Simulate success if all fields are present. The component sends a dummy password if empty.
+    if (settings.host && settings.port && settings.username && settings.password && settings.dbname) {
+        console.log('API: testConnection successful', settings);
+        return Promise.resolve({ success: true, message: 'Koneksi berhasil! Database dapat diakses.' });
+    } else {
+        console.log('API: testConnection failed', settings);
+        return Promise.resolve({ success: false, message: 'Koneksi gagal. Periksa kembali detail koneksi Anda.' });
+    }
+};
+
+export const saveConnectionSettings = async (settings: any): Promise<{ success: boolean; message: string }> => {
+    await simulateDelay(1000);
+    if (settings.host && settings.port && settings.username && settings.password && settings.dbname) {
+        console.log('API: saveConnectionSettings successful', settings);
+        return Promise.resolve({ success: true, message: 'Pengaturan koneksi berhasil disimpan.' });
+    } else {
+        console.log('API: saveConnectionSettings failed', settings);
+        return Promise.resolve({ success: false, message: 'Gagal menyimpan. Pastikan semua field terisi.' });
+    }
 };
