@@ -3,23 +3,21 @@ import {
     HomeIcon,
     GlobeAltIcon,
     StorefrontIcon,
-    // PresentationChartLineIcon, // Re-assigned to Performansi
-    TagIcon,
-    // GaugeIcon, // No longer used in menu
-    CrosshairsIcon,
-    // ScaleIcon, // No longer used in menu
-    // ExclamationCircleIcon, // Replaced for DOA
     DocumentTextIcon,
-    // ChartBarSquareIcon, // Replaced for Monitoring POP
     CloudArrowUpIcon,
     UsersIcon,
-    PresentationChartLineIcon, // Keep for Performansi
-    ClipboardDocumentCheckIcon, // New for Sales Plan
-    TicketIcon, // New for Program
-    ReceiptPercentIcon, // New for Fee
-    TruckIcon, // New for DOA
-    MegaphoneIcon, // New for Monitoring POP
+    ClipboardDocumentCheckIcon,
+    BoxIcon,
+    ArrowTrendingUpIcon,
+    CheckCircleIcon,
+    ComplaintIcon,
+    CreditCardIcon,
+    FeeIcon,
+    FlagIcon,
+    SparklesIcon
 } from './components/icons';
+
+const unavailable = (featureName: string) => `/feature-unavailable?feature=${encodeURIComponent(featureName.toLowerCase().replace(/\s/g, '-'))}`;
 
 export const MENU_ITEMS: MenuItem[] = [
   {
@@ -40,9 +38,9 @@ export const MENU_ITEMS: MenuItem[] = [
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
     children: [
       { path: '/outlet/register', name: 'Outlet Register', requiredRoles: Object.values(UserRole) },
-      { path: '/feature-unavailable', name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
-      { path: '/feature-unavailable', name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
-      { path: '/feature-unavailable', name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
+      { path: unavailable('Stock Perdana'), name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
+      { path: unavailable('Stock Voucher'), name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
+      { path: unavailable('Omzet Outlet'), name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
@@ -50,73 +48,73 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: ClipboardDocumentCheckIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/feature-unavailable', name: 'Perdana', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'CVM', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Monitoring Visit', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Perdana'), name: 'Perdana', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Voucher Fisik'), name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('CVM'), name: 'CVM', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Monitoring Visit'), name: 'Monitoring Visit', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
     name: 'Sell Thru',
-    icon: TagIcon,
+    icon: CreditCardIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.DirectSalesD2C],
     children: [
         { path: '/sell-thru/nota', name: 'ST Nota', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('ST Digipos'), name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Penjualan D2C'), name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
     name: 'Performansi',
-    icon: PresentationChartLineIcon,
+    icon: ArrowTrendingUpIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/feature-unavailable', name: '5S 4R', requiredRoles: [UserRole.AdminSuper, UserRole.Manager] },
-        { path: '/feature-unavailable', name: 'Top Line', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Market Share', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Aktifasi', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Sellout', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Inject Voucher Fisik', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Redeem Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('5S 4R'), name: '5S 4R', requiredRoles: [UserRole.AdminSuper, UserRole.Manager] },
+        { path: unavailable('Top Line'), name: 'Top Line', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Market Share'), name: 'Market Share', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Aktifasi'), name: 'Aktifasi', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Sellout'), name: 'Sellout', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Inject Voucher Fisik'), name: 'Inject Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Redeem Voucher Fisik'), name: 'Redeem Voucher Fisik', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
     name: 'KPI',
-    icon: CrosshairsIcon,
+    icon: CheckCircleIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-       { path: '/feature-unavailable', name: 'KPI Cluster', requiredRoles: Object.values(UserRole) },
-       { path: '/feature-unavailable', name: 'KPI Salesforce', requiredRoles: Object.values(UserRole) },
-       { path: '/feature-unavailable', name: 'KPI D2C', requiredRoles: Object.values(UserRole) },
+       { path: unavailable('KPI Cluster'), name: 'KPI Cluster', requiredRoles: Object.values(UserRole) },
+       { path: unavailable('KPI Salesforce'), name: 'KPI Salesforce', requiredRoles: Object.values(UserRole) },
+       { path: unavailable('KPI D2C'), name: 'KPI D2C', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
     name: 'Program',
-    icon: TicketIcon,
+    icon: SparklesIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/feature-unavailable', name: 'SCS', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Retina', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('SCS'), name: 'SCS', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Retina'), name: 'Retina', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
     name: 'Fee',
-    icon: ReceiptPercentIcon,
+    icon: FeeIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-         { path: '/feature-unavailable', name: 'Fee', requiredRoles: Object.values(UserRole) },
-         { path: '/feature-unavailable', name: 'Management Fee', requiredRoles: Object.values(UserRole) },
-         { path: '/feature-unavailable', name: 'Marketing Fee', requiredRoles: Object.values(UserRole) },
+         { path: unavailable('Fee'), name: 'Fee', requiredRoles: Object.values(UserRole) },
+         { path: unavailable('Management Fee'), name: 'Management Fee', requiredRoles: Object.values(UserRole) },
+         { path: unavailable('Marketing Fee'), name: 'Marketing Fee', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
     name: 'DOA',
-    icon: TruckIcon,
+    icon: BoxIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
     children: [
-        { path: '/feature-unavailable', name: 'Alokasi', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'List SN', requiredRoles: Object.values(UserRole) },
-        { path: '/feature-unavailable', name: 'Stock', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Alokasi'), name: 'Alokasi', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('List SN'), name: 'List SN', requiredRoles: Object.values(UserRole) },
+        { path: unavailable('Stock'), name: 'Stock', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
@@ -127,13 +125,18 @@ export const MENU_ITEMS: MenuItem[] = [
       { path: '/documentation', name: 'Form Kunjungan', requiredRoles: [UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
       { path: '/input-form', name: 'Input Form', requiredRoles: [UserRole.AdminInput, UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
       { path: '/video', name: 'Video Roleplay', requiredRoles: [UserRole.SalesforceIDS, UserRole.DirectSalesD2C, UserRole.SupervisorIDS, UserRole.SupervisorD2C] },
-      { path: '/complaint', name: 'Komplain', requiredRoles: [UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C] },
     ]
+  },
+  {
+    path: '/complaint',
+    name: 'Komplain',
+    icon: ComplaintIcon,
+    requiredRoles: [UserRole.SupervisorIDS, UserRole.SupervisorD2C, UserRole.SalesforceIDS, UserRole.DirectSalesD2C],
   },
   {
     path: '/pop-monitoring',
     name: 'Monitoring POP',
-    icon: MegaphoneIcon,
+    icon: FlagIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
   },
    {
