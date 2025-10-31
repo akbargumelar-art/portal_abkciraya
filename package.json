@@ -1,22 +1,18 @@
 {
-  "name": "the-horse-wind---agrabudi-komunika-dashboard",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "portal-cirebon-raya-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Portal Cirebon Raya application.",
+  "main": "server.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-router-dom": "^7.9.4"
-  },
-  "devDependencies": {
-    "@types/node": "^22.14.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.10.1"
   }
 }
