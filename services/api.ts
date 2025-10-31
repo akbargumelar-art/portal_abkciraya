@@ -29,15 +29,26 @@ const authedFetch = async (url: string, options: RequestInit = {}) => {
 };
 
 // --- Authentication ---
-export const login = async (username: string, password: string): Promise<{ user: User; token: string } | null> => {
-    // This is still mocked for now. In a real app, this would be a fetch call to a login endpoint.
-    console.log(`Attempting login for: ${username}`);
-    // Simulate fetching all users to find the one logging in
-    const users = await getUsers();
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+// Mock users for login purposes ONLY, allowing prototype testing without a live database.
+const MOCK_USERS_FOR_LOGIN: User[] = [
+    { id: '1', name: 'Agus Purnomo', username: 'agus.purnomo', role: UserRole.AdminSuper, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
+    { id: '2', name: 'Budi Input', username: 'budi.input', role: UserRole.AdminInput, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
+    { id: '3', name: 'Cici Manager', username: 'cici.manager', role: UserRole.Manager, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
+    { id: '4', name: 'Dedi SPV IDS', username: 'dedi.spvids', role: UserRole.SupervisorIDS, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
+    { id: '5', name: 'Eka SPV D2C', username: 'eka.spvd2c', role: UserRole.SupervisorD2C, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
+    { id: '6', name: 'Fani Salesforce', username: 'fani.salesforce', role: UserRole.SalesforceIDS, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
+    { id: '7', name: 'Gita Direct Sales', username: 'gita.directsales', role: UserRole.DirectSalesD2C, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
+];
 
-    if (user && password) { // In real app, password would be checked against a hash
-        console.log('Simulating successful login');
+export const login = async (username: string, password: string): Promise<{ user: User; token: string } | null> => {
+    // This function is mocked for prototype testing. It does NOT hit the backend.
+    console.log(`Attempting login for: ${username}`);
+    
+    // Find user in the mock list
+    const user = MOCK_USERS_FOR_LOGIN.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    if (user && password) { // In this mock, any password will work
+        console.log('Simulating successful login with mock data');
         return Promise.resolve({ user, token: 'fake-jwt-token-for-demo' });
     } else {
         return Promise.reject(new Error('Invalid credentials'));
@@ -69,7 +80,7 @@ export const submitVisitForm = (formData: unknown): Promise<{ success: boolean; 
 // --- User Management Services (Connected to Backend) ---
 export const getUsers = async (): Promise<User[]> => {
     console.log('API: Fetching users from backend...');
-    // Using a direct fetch here as it's a GET request and might not need the auth helper's complexity for now
+    // This function remains connected to the live backend.
     const response = await fetch(`${API_BASE_URL}/users`);
     if (!response.ok) {
         throw new Error('Failed to fetch users');
