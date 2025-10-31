@@ -48,6 +48,7 @@ const DataTable = <T extends object>({ columns, data }: DataTableProps<T>) => {
 
 
   const filteredData = useMemo(() => {
+    if (!data) return [];
     return data.filter(item => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
@@ -119,15 +120,23 @@ const DataTable = <T extends object>({ columns, data }: DataTableProps<T>) => {
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((row, rowIndex) => (
-              <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
-                {columns.map((col) => (
-                  <td key={col.id ?? col.accessorKey as string} className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                    {col.cell ? col.cell(row) : String(row[col.accessorKey as keyof T] ?? '')}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {paginatedData.length > 0 ? (
+                paginatedData.map((row, rowIndex) => (
+                  <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
+                    {columns.map((col) => (
+                      <td key={col.id ?? col.accessorKey as string} className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                        {col.cell ? col.cell(row) : String(row[col.accessorKey as keyof T] ?? '')}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+            ) : (
+                <tr>
+                    <td colSpan={columns.length} className="text-center py-10 text-gray-500">
+                        Tidak ada data yang tersedia.
+                    </td>
+                </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -146,7 +155,7 @@ const DataTable = <T extends object>({ columns, data }: DataTableProps<T>) => {
                 </button>
                 <button
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                    disabled={currentPage === totalPages}
+                    disabled={currentPage === totalPages || totalPages === 0}
                     className="px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Next

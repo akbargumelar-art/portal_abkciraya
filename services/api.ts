@@ -1,135 +1,103 @@
-import { MOCK_USERS } from '../constants';
-import { Outlet, User } from '../types';
+import { User, Outlet, OutletData } from '../types';
 
-// --- Mock Database ---
-const MOCK_OUTLETS: Record<string, Outlet> = {
-  'OUTLET001': { id: 'OUTLET001', name: 'Telkomsel Grapari Cirebon', address: 'Jl. Tentara Pelajar No.1, Cirebon' },
-  'OUTLET002': { id: 'OUTLET002', name: 'Mitra Cell', address: 'Jl. Siliwangi No. 123, Cirebon' },
-  'OUTLET003': { id: 'OUTLET003', name: 'Pahlawan Phone', address: 'Jl. Pahlawan No. 45, Cirebon' },
+const API_BASE_URL = '/api'; // Proxy to your backend server
+
+// Helper function for authenticated requests
+const authedFetch = async (url: string, options: RequestInit = {}) => {
+    const token = localStorage.getItem('authToken');
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+    };
+
+    if (token) {
+        (headers as any).Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${url}`, { ...options, headers });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+    return response.json();
 };
 
 // --- Authentication ---
-export const login = (username: string): Promise<User | null> => {
+export const login = async (username: string, password: string): Promise<{ user: User; token: string } | null> => {
     console.log(`Attempting login for: ${username}`);
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const user = MOCK_USERS[username.toLowerCase()];
-            if (user) {
-                console.log('Login successful:', user);
-                resolve(user);
-            } else {
-                console.log('Login failed: User not found');
-                resolve(null);
-            }
-        }, 500);
+    // This is a mock API call. In a real scenario, this would be a POST request to a backend.
+    // For now, we simulate a successful login for any of the previous mock users for demonstration purposes.
+    const validUsernames = ['agus.purnomo', 'budi.input', 'cici.manager', 'dedi.spvids', 'eka.spvd2c', 'fani.salesforce', 'gita.directsales'];
+    if (validUsernames.includes(username.toLowerCase()) && password) {
+        console.log('Simulating successful login');
+        const userMap: Record<string, User> = {
+          'agus.purnomo': { id: 'user01', name: 'Agus Purnomo', role: 'Admin Super' as any, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
+          'budi.input': { id: 'user02', name: 'Budi Input', role: 'Admin Input Data' as any, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
+          'cici.manager': { id: 'user03', name: 'Cici Manager', role: 'Manager' as any, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
+          'dedi.spvids': { id: 'user04', name: 'Dedi SPV IDS', role: 'Supervisor (IDS)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
+          'eka.spvd2c': { id: 'user05', name: 'Eka SPV D2C', role: 'Supervisor Direct Sales (D2C)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
+          'fani.salesforce': { id: 'user06', name: 'Fani Salesforce', role: 'Salesforce (IDS)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
+          'gita.directsales': { id: 'user07', name: 'Gita Direct Sales', role: 'Direct Sales (D2C)' as any, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
+        }
+        return Promise.resolve({ user: userMap[username.toLowerCase()], token: 'fake-jwt-token-for-demo' });
+    } else {
+        return Promise.reject(new Error('Invalid credentials'));
+    }
+    /*
+    // REAL IMPLEMENTATION EXAMPLE:
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
     });
+    if (!response.ok) throw new Error('Login failed');
+    return response.json();
+    */
 };
 
 export const logout = (): void => {
     console.log('User logged out');
+    // In a real app, you might also call a backend endpoint to invalidate the token
+    // authedFetch('/auth/logout', { method: 'POST' });
+};
+
+// --- Data Services ---
+export const getOutlets = (): Promise<OutletData[]> => {
+    // This function would fetch all outlet data from the backend.
+    // Since we don't have a backend, we return an empty array to show the "no data" state.
+    console.log("Fetching outlets... (simulated - returning empty array)");
+    return Promise.resolve([]);
+    /* 
+    // REAL IMPLEMENTATION EXAMPLE:
+    return authedFetch('/outlets');
+    */
 };
 
 
 // --- Form Services ---
 export const lookupOutlet = (outletId: string): Promise<Outlet | null> => {
-    console.log(`Looking up outlet with ID: ${outletId}`);
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const outlet = MOCK_OUTLETS[outletId.toUpperCase()];
-            if (outlet) {
-                console.log('Outlet found:', outlet);
-                resolve(outlet);
-            } else {
-                console.log('Outlet not found');
-                resolve(null);
-            }
-        }, 700);
-    });
+    return authedFetch(`/outlets/${outletId}`);
 };
 
 export const submitVisitForm = (formData: unknown): Promise<{ success: boolean; message: string }> => {
-    console.log('Submitting form data:', formData);
-
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            // Simulate triggering webhook
-            triggerWebhook(formData);
-            resolve({ success: true, message: 'Form submitted successfully!' });
-        }, 1000);
-    });
-};
-
-const triggerWebhook = (payload: unknown) => {
-    const webhookUrl = 'https://waha.abkciraya.cloud/sentText'; // Example URL
-    console.log(`%c[WEBHOOK TRIGGERED]`, 'color: #4CAF50; font-weight: bold;');
-    console.log(`Endpoint: ${webhookUrl}`);
-    console.log('Payload:', JSON.stringify(payload, null, 2));
-    
-    // In a real app, you would use fetch() here:
-    /*
-    fetch(webhookUrl, {
+    return authedFetch('/visits', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(response => console.log('Webhook response:', response.status))
-    .catch(error => console.error('Webhook error:', error));
-    */
+        body: JSON.stringify(formData),
+    });
 };
 
 // --- Connection Settings Services ---
-const API_BASE_URL = '/api'; // Use a relative path for the backend
-
 export const testConnection = async (settings: unknown): Promise<{ success: boolean; message: string }> => {
-  console.log('Sending test connection request to backend:', settings);
-  try {
-    const response = await fetch(`${API_BASE_URL}/test-connection`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-        // If the server returns an error (status 4xx or 5xx)
-        throw new Error(result.message || 'An error occurred on the server.');
-    }
-    return result;
-  } catch (error) {
-    // If there's a network issue or the fetch fails
-    console.error("Error testing connection:", error);
-    const errorMessage = (error as Error).message;
-    if (errorMessage.includes('Failed to fetch')) {
-        return { success: false, message: 'Gagal terhubung ke server backend. Pastikan server backend (Node.js) sudah berjalan.' };
-    }
-    return { success: false, message: errorMessage };
-  }
+  return authedFetch('/admin/connections/test', {
+    method: 'POST',
+    body: JSON.stringify(settings)
+  });
 };
 
 export const saveConnectionSettings = async (settings: unknown): Promise<{ success: boolean; message: string }> => {
-  console.log('Sending settings to save to backend:', settings);
-   try {
-    const response = await fetch(`${API_BASE_URL}/save-settings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-    
-    const result = await response.json();
-    if (!response.ok) {
-        throw new Error(result.message || 'An error occurred on the server.');
-    }
-    return result;
-  } catch (error) {
-    console.error("Error saving settings:", error);
-    const errorMessage = (error as Error).message;
-    if (errorMessage.includes('Failed to fetch')) {
-        return { success: false, message: 'Gagal menyimpan ke server backend. Pastikan server sudah berjalan.' };
-    }
-    return { success: false, message: errorMessage };
-  }
+  return authedFetch('/admin/connections/save', {
+    method: 'POST',
+    body: JSON.stringify(settings)
+  });
 };

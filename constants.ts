@@ -1,4 +1,4 @@
-import { UserRole, MenuItem, User } from './types';
+import { UserRole, MenuItem } from './types';
 import { 
     HomeIcon,
     GlobeAltIcon,
@@ -21,17 +21,6 @@ import {
     MegaphoneIcon, // New for Monitoring POP
 } from './components/icons';
 
-export const MOCK_USERS: Record<string, User> = {
-  'agus.purnomo': { id: 'user01', name: 'Agus Purnomo', role: UserRole.AdminSuper, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
-  'budi.input': { id: 'user02', name: 'Budi Input', role: UserRole.AdminInput, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
-  'cici.manager': { id: 'user03', name: 'Cici Manager', role: UserRole.Manager, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
-  'dedi.spvids': { id: 'user04', name: 'Dedi SPV IDS', role: UserRole.SupervisorIDS, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
-  'eka.spvd2c': { id: 'user05', name: 'Eka SPV D2C', role: UserRole.SupervisorD2C, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
-  'fani.salesforce': { id: 'user06', name: 'Fani Salesforce', role: UserRole.SalesforceIDS, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
-  'gita.directsales': { id: 'user07', name: 'Gita Direct Sales', role: UserRole.DirectSalesD2C, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
-};
-
-
 export const MENU_ITEMS: MenuItem[] = [
   {
     path: '/dashboard',
@@ -51,9 +40,9 @@ export const MENU_ITEMS: MenuItem[] = [
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
     children: [
       { path: '/outlet/register', name: 'Outlet Register', requiredRoles: Object.values(UserRole) },
-      { path: '/outlet/stock-perdana', name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
-      { path: '/outlet/stock-voucher', name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
-      { path: '/outlet/omzet', name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
+      { path: '/feature-unavailable', name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
+      { path: '/feature-unavailable', name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
+      { path: '/feature-unavailable', name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
@@ -61,10 +50,10 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: ClipboardDocumentCheckIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/sales-plan/perdana', name: 'Perdana', requiredRoles: Object.values(UserRole) },
-        { path: '/sales-plan/voucher-fisik', name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
-        { path: '/sales-plan/cvm', name: 'CVM', requiredRoles: Object.values(UserRole) },
-        { path: '/sales-plan/monitoring-visit', name: 'Monitoring Visit', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Perdana', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'CVM', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Monitoring Visit', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
@@ -73,8 +62,8 @@ export const MENU_ITEMS: MenuItem[] = [
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.DirectSalesD2C],
     children: [
         { path: '/sell-thru/nota', name: 'ST Nota', requiredRoles: Object.values(UserRole) },
-        { path: '/sell-thru/digipos', name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
-        { path: '/sell-thru/penjualan-d2c', name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
@@ -82,13 +71,13 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: PresentationChartLineIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/performance/5s4r', name: '5S 4R', requiredRoles: [UserRole.AdminSuper, UserRole.Manager] },
-        { path: '/performance/top-line', name: 'Top Line', requiredRoles: Object.values(UserRole) },
-        { path: '/performance/market-share', name: 'Market Share', requiredRoles: Object.values(UserRole) },
-        { path: '/performance/aktifasi', name: 'Aktifasi', requiredRoles: Object.values(UserRole) },
-        { path: '/performance/sellout', name: 'Sellout', requiredRoles: Object.values(UserRole) },
-        { path: '/performance/inject-voucher', name: 'Inject Voucher Fisik', requiredRoles: Object.values(UserRole) },
-        { path: '/performance/redeem-voucher', name: 'Redeem Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: '5S 4R', requiredRoles: [UserRole.AdminSuper, UserRole.Manager] },
+        { path: '/feature-unavailable', name: 'Top Line', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Market Share', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Aktifasi', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Sellout', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Inject Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Redeem Voucher Fisik', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
@@ -96,9 +85,9 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: CrosshairsIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-       { path: '/kpi/cluster', name: 'KPI Cluster', requiredRoles: Object.values(UserRole) },
-       { path: '/kpi/salesforce', name: 'KPI Salesforce', requiredRoles: Object.values(UserRole) },
-       { path: '/kpi/d2c', name: 'KPI D2C', requiredRoles: Object.values(UserRole) },
+       { path: '/feature-unavailable', name: 'KPI Cluster', requiredRoles: Object.values(UserRole) },
+       { path: '/feature-unavailable', name: 'KPI Salesforce', requiredRoles: Object.values(UserRole) },
+       { path: '/feature-unavailable', name: 'KPI D2C', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
@@ -106,8 +95,8 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: TicketIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: '/program/scs', name: 'SCS', requiredRoles: Object.values(UserRole) },
-        { path: '/program/retina', name: 'Retina', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'SCS', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Retina', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
@@ -115,9 +104,9 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: ReceiptPercentIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-         { path: '/fee/fee', name: 'Fee', requiredRoles: Object.values(UserRole) },
-         { path: '/fee/management', name: 'Management Fee', requiredRoles: Object.values(UserRole) },
-         { path: '/fee/marketing', name: 'Marketing Fee', requiredRoles: Object.values(UserRole) },
+         { path: '/feature-unavailable', name: 'Fee', requiredRoles: Object.values(UserRole) },
+         { path: '/feature-unavailable', name: 'Management Fee', requiredRoles: Object.values(UserRole) },
+         { path: '/feature-unavailable', name: 'Marketing Fee', requiredRoles: Object.values(UserRole) },
     ]
   },
   {
@@ -125,9 +114,9 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: TruckIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
     children: [
-        { path: '/doa/alokasi', name: 'Alokasi', requiredRoles: Object.values(UserRole) },
-        { path: '/doa/list-sn', name: 'List SN', requiredRoles: Object.values(UserRole) },
-        { path: '/doa/stock', name: 'Stock', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Alokasi', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'List SN', requiredRoles: Object.values(UserRole) },
+        { path: '/feature-unavailable', name: 'Stock', requiredRoles: Object.values(UserRole) },
     ]
   },
   {

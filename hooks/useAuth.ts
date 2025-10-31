@@ -4,7 +4,7 @@ import { login as apiLogin, logout as apiLogout } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -12,17 +12,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    try {
+      const storedUser = localStorage.getItem('user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+      return null;
+    }
   });
 
-  const login = async (username: string) => {
-    const loggedInUser = await apiLogin(username);
-    if (loggedInUser) {
-      setUser(loggedInUser);
-      localStorage.setItem('user', JSON.stringify(loggedInUser));
+  const login = async (username: string, password: string) => {
+    const response = await apiLogin(username, password);
+    if (response && response.user && response.token) {
+      setUser(response.user);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('authToken', response.token);
     } else {
-        throw new Error("Invalid credentials");
+        throw new Error("Invalid credentials or server error");
     }
   };
 
@@ -30,6 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     apiLogout();
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
   };
 
   // FIX: Replaced JSX with React.createElement to be compatible with a .ts file. This resolves parsing errors.
