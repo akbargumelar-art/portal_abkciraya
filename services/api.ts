@@ -2,18 +2,6 @@ import { User, Outlet, OutletData, UserRole, UserFormData } from '../types';
 
 const API_BASE_URL = '/api'; // Proxy to your backend server
 
-// --- Mock Data ---
-let mockUsers: User[] = [
-    { id: 'user01', name: 'Agus Purnomo', username: 'agus.purnomo', role: UserRole.AdminSuper, avatarUrl: 'https://i.pravatar.cc/150?u=agus' },
-    { id: 'user02', name: 'Budi Input', username: 'budi.input', role: UserRole.AdminInput, avatarUrl: 'https://i.pravatar.cc/150?u=budi' },
-    { id: 'user03', name: 'Cici Manager', username: 'cici.manager', role: UserRole.Manager, avatarUrl: 'https://i.pravatar.cc/150?u=cici' },
-    { id: 'user04', name: 'Dedi SPV IDS', username: 'dedi.spvids', role: UserRole.SupervisorIDS, avatarUrl: 'https://i.pravatar.cc/150?u=dedi' },
-    { id: 'user05', name: 'Eka SPV D2C', username: 'eka.spvd2c', role: UserRole.SupervisorD2C, avatarUrl: 'https://i.pravatar.cc/150?u=eka' },
-    { id: 'user06', name: 'Fani Salesforce', username: 'fani.salesforce', role: UserRole.SalesforceIDS, avatarUrl: 'https://i.pravatar.cc/150?u=fani' },
-    { id: 'user07', name: 'Gita Direct Sales', username: 'gita.directsales', role: UserRole.DirectSalesD2C, avatarUrl: 'https://i.pravatar.cc/150?u=gita' },
-];
-
-
 // Helper function for authenticated requests
 const authedFetch = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem('authToken');
@@ -32,13 +20,21 @@ const authedFetch = async (url: string, options: RequestInit = {}) => {
         const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
-    return response.json();
+    // Handle cases where the response might be empty (e.g., DELETE 204 No Content)
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+        return response.json();
+    }
+    return { success: true };
 };
 
 // --- Authentication ---
 export const login = async (username: string, password: string): Promise<{ user: User; token: string } | null> => {
+    // This is still mocked for now. In a real app, this would be a fetch call to a login endpoint.
     console.log(`Attempting login for: ${username}`);
-    const user = mockUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
+    // Simulate fetching all users to find the one logging in
+    const users = await getUsers();
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
 
     if (user && password) { // In real app, password would be checked against a hash
         console.log('Simulating successful login');
@@ -70,52 +66,40 @@ export const submitVisitForm = (formData: unknown): Promise<{ success: boolean; 
     });
 };
 
-// --- User Management Services (Mocked) ---
-const simulateDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
+// --- User Management Services (Connected to Backend) ---
 export const getUsers = async (): Promise<User[]> => {
-    await simulateDelay(500);
-    console.log('API: getUsers called', mockUsers);
-    return Promise.resolve([...mockUsers]);
+    console.log('API: Fetching users from backend...');
+    // Using a direct fetch here as it's a GET request and might not need the auth helper's complexity for now
+    const response = await fetch(`${API_BASE_URL}/users`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch users');
+    }
+    return response.json();
 };
 
 export const addUser = async (userData: UserFormData): Promise<User> => {
-    await simulateDelay(500);
-    const newUser: User = {
-        id: `user${Date.now()}`,
-        ...userData,
-    };
-    mockUsers.push(newUser);
-    console.log('API: addUser called', newUser);
-    return Promise.resolve(newUser);
+    console.log('API: Sending new user to backend...', userData);
+    return authedFetch('/users', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+    });
 };
 
 export const updateUser = async (userId: string, userData: Partial<UserFormData>): Promise<User> => {
-    await simulateDelay(500);
-    const userIndex = mockUsers.findIndex(u => u.id === userId);
-    if (userIndex === -1) {
-        return Promise.reject(new Error('User not found'));
-    }
-    // Don't update password if it's empty
-    const { password, ...restOfData } = userData;
-    const updatedData = { ...restOfData };
-    
-    const updatedUser = { ...mockUsers[userIndex], ...updatedData };
-    mockUsers[userIndex] = updatedUser;
-    console.log('API: updateUser called', updatedUser);
-    return Promise.resolve(updatedUser);
+    console.log(`API: Sending user update to backend for ID ${userId}...`, userData);
+    return authedFetch(`/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(userData),
+    });
 };
 
 export const deleteUser = async (userId: string): Promise<{ success: boolean }> => {
-    await simulateDelay(500);
-    const initialLength = mockUsers.length;
-    mockUsers = mockUsers.filter(u => u.id !== userId);
-    if (mockUsers.length === initialLength) {
-        return Promise.reject(new Error('User not found'));
-    }
-    console.log('API: deleteUser called for', userId);
-    return Promise.resolve({ success: true });
+    console.log(`API: Sending delete request to backend for ID ${userId}...`);
+    return authedFetch(`/users/${userId}`, {
+        method: 'DELETE',
+    });
 };
+
 
 // --- Connection Settings Services (Connecting to Live Backend) ---
 export const testConnection = async (settings: any): Promise<{ success: boolean; message: string }> => {

@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise'); // Using the promise-based version of mysql2
 const cors = require('cors');
+const bcrypt = require('bcryptjs'); // For password hashing
 
 const app = express();
 // The execution environment will likely provide the port.
@@ -12,6 +13,25 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(bodyParser.json()); // Middleware to parse JSON bodies
+
+// --- In-memory store for DB connection settings ---
+// In a real production app, this should be managed via environment variables or a secure vault.
+let dbConfig = null;
+let pool = null;
+
+const initializePool = () => {
+    if (dbConfig) {
+        console.log("Initializing database connection pool...");
+        pool = mysql.createPool({
+            ...dbConfig,
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        });
+    } else {
+        console.log("Database config not set. Pool not initialized.");
+    }
+};
 
 // --- API Routes ---
 
@@ -63,15 +83,111 @@ app.post('/api/save-connection', (req, res) => {
     const settings = req.body;
     console.log('Backend received save request:', settings);
 
-    // This is a simulation. A real implementation would encrypt and store these
-    // settings securely in environment variables or a secrets manager, not in a database or file.
-    if (settings.host && settings.port && settings.username && settings.password && settings.dbname) {
-        // We're not actually storing them here, just acknowledging the request.
-        res.status(200).json({ success: true, message: 'Pengaturan koneksi berhasil disimpan. (Simulasi)' });
+    if (settings.host && settings.port && settings.username && settings.dbname) {
+        dbConfig = {
+            host: settings.host,
+            port: parseInt(settings.port, 10),
+            user: settings.username,
+            password: settings.password,
+            database: settings.dbname,
+        };
+        initializePool(); // Initialize the pool with the new settings
+        res.status(200).json({ success: true, message: 'Pengaturan koneksi berhasil diterapkan.' });
     } else {
         res.status(400).json({ success: false, message: 'Gagal menyimpan. Pastikan semua field terisi.' });
     }
 });
+
+// --- User Management API ---
+
+// GET all users
+app.get('/api/users', async (req, res) => {
+    if (!pool) return res.status(503).json({ message: 'Database connection not configured.' });
+    try {
+        const [rows] = await pool.query('SELECT id, name, username, role, avatar_url as avatarUrl, created_at, updated_at FROM users');
+        res.json(rows);
+    } catch (error) {
+        console.error('Failed to fetch users:', error);
+        res.status(500).json({ message: 'Error fetching users from database.' });
+    }
+});
+
+// POST a new user
+app.post('/api/users', async (req, res) => {
+    if (!pool) return res.status(503).json({ message: 'Database connection not configured.' });
+    const { name, username, password, role, avatarUrl } = req.body;
+
+    if (!name || !username || !password || !role) {
+        return res.status(400).json({ message: 'Name, username, password, and role are required.' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const [result] = await pool.query(
+            'INSERT INTO users (name, username, password_hash, role, avatar_url) VALUES (?, ?, ?, ?, ?)',
+            [name, username, hashedPassword, role, avatarUrl || null]
+        );
+        res.status(201).json({ id: result.insertId, name, username, role, avatarUrl });
+    } catch (error) {
+        console.error('Failed to add user:', error);
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ message: 'Username already exists.' });
+        }
+        res.status(500).json({ message: 'Error adding user to database.' });
+    }
+});
+
+// PUT (update) a user
+app.put('/api/users/:id', async (req, res) => {
+    if (!pool) return res.status(503).json({ message: 'Database connection not configured.' });
+    const { id } = req.params;
+    const { name, username, password, role, avatarUrl } = req.body;
+
+    try {
+        let query = 'UPDATE users SET name = ?, username = ?, role = ?, avatar_url = ?';
+        const params = [name, username, role, avatarUrl || null];
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            query += ', password_hash = ?';
+            params.push(hashedPassword);
+        }
+
+        query += ' WHERE id = ?';
+        params.push(id);
+
+        const [result] = await pool.query(query, params);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        res.json({ id, name, username, role, avatarUrl });
+    } catch (error) {
+        console.error('Failed to update user:', error);
+         if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ message: 'Username already exists.' });
+        }
+        res.status(500).json({ message: 'Error updating user in database.' });
+    }
+});
+
+// DELETE a user
+app.delete('/api/users/:id', async (req, res) => {
+    if (!pool) return res.status(503).json({ message: 'Database connection not configured.' });
+    const { id } = req.params;
+
+    try {
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        res.status(204).send(); // No Content
+    } catch (error) {
+        console.error('Failed to delete user:', error);
+        res.status(500).json({ message: 'Error deleting user from database.' });
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`Backend server listening on port ${PORT}`);
