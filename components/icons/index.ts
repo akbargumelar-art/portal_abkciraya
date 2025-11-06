@@ -40,6 +40,8 @@ export { default as CheckCircleIcon } from './CheckCircleIcon';
 export { default as XCircleIcon } from './XCircleIcon';
 export { default as CameraIcon } from './CameraIcon';
 export { default as SettingsIcon } from './AdminIcon';
+export { default as PlusCircleIcon } from './PlusCircleIcon';
+export { default as MinusCircleIcon } from './MinusCircleIcon';
 
 // Icons to match image
 export { default as CreditCardIcon } from './CreditCardIcon';

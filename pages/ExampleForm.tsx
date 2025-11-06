@@ -3,6 +3,7 @@ import { useGeolocation } from '../hooks/useGeolocation';
 import { lookupOutlet, submitVisitForm } from '../services/api';
 import { Outlet } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import InlineSpinner from '../components/InlineSpinner';
 
 interface ExampleFormProps {
     formType: 'IDS' | 'D2C';
@@ -139,7 +140,12 @@ const ExampleForm: React.FC<ExampleFormProps> = ({ formType }) => {
                     placeholder="Type Outlet ID (e.g., OUTLET001)"
                     required
                 />
-                {isOutletLoading && <p className="text-sm text-gray-500 mt-1">Searching...</p>}
+                {isOutletLoading && (
+                    <div className="text-sm text-gray-500 mt-1 flex items-center">
+                        <InlineSpinner />
+                        <span>Mencari outlet...</span>
+                    </div>
+                )}
                 {outletError && <p className="text-sm text-red-500 mt-1">{outletError}</p>}
                 {outlet && (
                     <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md">

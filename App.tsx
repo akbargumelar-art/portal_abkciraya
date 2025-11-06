@@ -20,6 +20,14 @@ import UserManagementPage from './pages/UserManagementPage';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import FeatureUnavailablePage from './pages/FeatureUnavailablePage';
 import ConnectionSettingsPage from './pages/ConnectionSettingsPage';
+import StockPerdanaPage from './pages/StockPerdanaPage';
+import StockVoucherPage from './pages/StockVoucherPage';
+import OmzetOutletPage from './pages/OmzetOutletPage';
+import SalesPlanPerdanaPage from './pages/SalesPlanPerdanaPage';
+import SalesPlanVoucherPage from './pages/SalesPlanVoucherPage';
+import SalesPlanCvmPage from './pages/SalesPlanCvmPage';
+import SellThruDigiposPage from './pages/SellThruDigiposPage';
+import PenjualanD2CPage from './pages/PenjualanD2CPage';
 
 const App: React.FC = () => {
   return (
@@ -55,7 +63,15 @@ const AppRoutes: React.FC = () => {
           
           {/* Implemented Features */}
           <Route path="/outlet/register" element={<OutletRegisterPage />} />
+          <Route path="/outlet/stock-perdana" element={<StockPerdanaPage />} />
+          <Route path="/outlet/stock-voucher" element={<StockVoucherPage />} />
+          <Route path="/outlet/omzet" element={<OmzetOutletPage />} />
+          <Route path="/sales-plan/perdana" element={<SalesPlanPerdanaPage />} />
+          <Route path="/sales-plan/voucher-fisik" element={<SalesPlanVoucherPage />} />
+          <Route path="/sales-plan/cvm" element={<SalesPlanCvmPage />} />
           <Route path="/sell-thru/nota" element={<SellThruNotaPage />} />
+          <Route path="/sell-thru/st-digipos" element={<SellThruDigiposPage />} />
+          <Route path="/sell-thru/penjualan-d2c" element={<PenjualanD2CPage />} />
           
           {/* Dokumentasi */}
           <Route path="/documentation" element={<DocumentationPage />} />

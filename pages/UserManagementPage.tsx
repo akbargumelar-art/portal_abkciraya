@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import UserForm from '../components/UserForm';
 import { PencilIcon, TrashIcon } from '../components/icons';
 import { MENU_ITEMS } from '../constants';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 // Helper to flatten menu items into a list of features with paths
 const flattenMenuItems = (items: MenuItem[]): { path: string; name: string; isChild: boolean }[] => {
@@ -150,6 +151,8 @@ const UserManagementPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof User; direction: 'asc' | 'desc' } | null>(null);
+    const [filters, setFilters] = useState<Record<string, string>>({});
 
     const fetchUsers = async () => {
         setIsLoading(true);
@@ -237,14 +240,64 @@ const UserManagementPage: React.FC = () => {
         },
     ], []);
 
+    const uniqueOptions = useMemo(() => {
+        const options: Record<string, Set<string>> = {};
+        columns.forEach(col => {
+            if (col.filterType === 'select') {
+                options[col.accessorKey as string] = new Set(users.map(item => String(item[col.accessorKey as keyof User])));
+            }
+        });
+        return options;
+    }, [users, columns]);
+
+    const filteredData = useMemo(() => {
+        return users.filter(item => {
+            return Object.entries(filters).every(([key, value]) => {
+                if (!value) return true;
+                const itemValue = String(item[key as keyof User] ?? '').toLowerCase();
+                const filterValue = String(value).toLowerCase();
+                const colDef = columns.find(c => c.accessorKey === key);
+                if (colDef?.filterType === 'select') return itemValue === filterValue;
+                return itemValue.includes(filterValue);
+            });
+        });
+    }, [users, filters, columns]);
+    
+    const sortedData = useMemo(() => {
+        if (!sortConfig) return filteredData;
+        return [...filteredData].sort((a, b) => {
+            const aValue = a[sortConfig.key];
+            const bValue = b[sortConfig.key];
+            if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }, [filteredData, sortConfig]);
+    
+    const handleSort = (key: keyof User) => {
+        setSortConfig(current => ({ key, direction: current && current.key === key && current.direction === 'asc' ? 'desc' : 'asc' }));
+    };
+
+    const handleFilterChange = (key: keyof User, value: string) => {
+        setFilters(prev => ({ ...prev, [key as string]: value }));
+    };
+
     const renderUserTable = () => {
         if (isLoading) {
-            return <div className="text-center p-8">Loading users...</div>;
+            return <LoadingIndicator type="table" tableColumns={3} text="Memuat data pengguna..." />;
         }
         if (error) {
-            return <div className="text-center p-8 text-red-600">{error}</div>;
+            return <div className="text-center p-8 text-red-600 bg-red-50 rounded-lg">{error}</div>;
         }
-        return <DataTable columns={columns} data={users} />;
+        return <DataTable 
+                    columns={columns} 
+                    data={sortedData}
+                    sortConfig={sortConfig}
+                    filters={filters}
+                    uniqueOptions={uniqueOptions}
+                    onSort={handleSort}
+                    onFilterChange={handleFilterChange}
+                />;
     };
 
     return (

@@ -40,9 +40,9 @@ export const MENU_ITEMS: MenuItem[] = [
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS],
     children: [
       { path: '/outlet/register', name: 'Outlet Register', requiredRoles: Object.values(UserRole) },
-      { path: unavailable('Stock Perdana'), name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
-      { path: unavailable('Stock Voucher'), name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
-      { path: unavailable('Omzet Outlet'), name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
+      { path: '/outlet/stock-perdana', name: 'Stock Perdana', requiredRoles: Object.values(UserRole) },
+      { path: '/outlet/stock-voucher', name: 'Stock Voucher', requiredRoles: Object.values(UserRole) },
+      { path: '/outlet/omzet', name: 'Omzet Outlet', requiredRoles: Object.values(UserRole) },
     ]
   },
     {
@@ -50,9 +50,9 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: ClipboardDocumentCheckIcon,
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.SupervisorD2C],
     children: [
-        { path: unavailable('Perdana'), name: 'Perdana', requiredRoles: Object.values(UserRole) },
-        { path: unavailable('Voucher Fisik'), name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
-        { path: unavailable('CVM'), name: 'CVM', requiredRoles: Object.values(UserRole) },
+        { path: '/sales-plan/perdana', name: 'Perdana', requiredRoles: Object.values(UserRole) },
+        { path: '/sales-plan/voucher-fisik', name: 'Voucher Fisik', requiredRoles: Object.values(UserRole) },
+        { path: '/sales-plan/cvm', name: 'CVM', requiredRoles: Object.values(UserRole) },
         { path: unavailable('Monitoring Visit'), name: 'Monitoring Visit', requiredRoles: Object.values(UserRole) },
     ]
   },
@@ -62,8 +62,8 @@ export const MENU_ITEMS: MenuItem[] = [
     requiredRoles: [UserRole.AdminSuper, UserRole.Manager, UserRole.SupervisorIDS, UserRole.DirectSalesD2C],
     children: [
         { path: '/sell-thru/nota', name: 'ST Nota', requiredRoles: Object.values(UserRole) },
-        { path: unavailable('ST Digipos'), name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
-        { path: unavailable('Penjualan D2C'), name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
+        { path: '/sell-thru/st-digipos', name: 'ST Digipos', requiredRoles: Object.values(UserRole) },
+        { path: '/sell-thru/penjualan-d2c', name: 'Penjualan D2C', requiredRoles: Object.values(UserRole) },
     ]
   },
     {

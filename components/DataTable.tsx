@@ -1,167 +1,189 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { SortIcon } from './icons';
 
 export interface ColumnDef<T> {
-  accessorKey: keyof T;
+  accessorKey: keyof T | `custom_${string}`;
   header: string;
   cell?: (row: T) => React.ReactNode;
   enableSorting?: boolean;
   enableFiltering?: boolean;
   filterType?: 'text' | 'select';
   id?: string;
+  group?: string; // New property for grouping
+  align?: 'left' | 'center' | 'right';
 }
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
+  sortConfig: { key: keyof T | `custom_${string}`; direction: 'asc' | 'desc' } | null;
+  filters: Record<string, string>;
+  uniqueOptions: Record<string, Set<string>>;
+  onSort: (key: keyof T | `custom_${string}`) => void;
+  onFilterChange: (key: keyof T | `custom_${string}`, value: string) => void;
 }
 
-const DataTable = <T extends object>({ columns, data }: DataTableProps<T>) => {
-  const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: 'asc' | 'desc' } | null>(null);
-  const [filters, setFilters] = useState<Record<keyof T, string>>({} as Record<keyof T, string>);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+const DataTable = <T extends object>({ 
+  columns, 
+  data,
+  sortConfig,
+  filters,
+  uniqueOptions,
+  onSort,
+  onFilterChange,
+}: DataTableProps<T>) => {
 
-  const handleSort = (key: keyof T) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
+  const headerGroups = useMemo(() => {
+    const hasGrouping = columns.some(c => c.group);
+    if (!hasGrouping) return { hasGrouping: false, topRow: [], bottomRow: columns };
 
-  const handleFilterChange = (key: keyof T, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1);
-  };
-  
-  const uniqueOptions = useMemo(() => {
-    const options: Record<string, Set<string>> = {};
-    columns.forEach(col => {
-      if (col.filterType === 'select') {
-        options[col.accessorKey as string] = new Set(data.map(item => String(item[col.accessorKey as keyof T])));
+    const finalTopRow = columns.reduce((acc, col) => {
+      if (col.group) {
+        if (!acc.find(h => h.header === col.group)) {
+          acc.push({ header: col.group, colSpan: columns.filter(c => c.group === col.group).length, rowSpan: 1 });
+        }
+      } else {
+        acc.push({ header: col.header, colSpan: 1, rowSpan: 2, originalColumn: col });
       }
-    });
-    return options;
-  }, [data, columns]);
+      return acc;
+    }, [] as { header: string; colSpan: number; rowSpan: number; originalColumn?: ColumnDef<T> }[]);
+    
+    const finalBottomRow = columns.filter(col => col.group);
 
+    return { hasGrouping: true, topRow: finalTopRow, bottomRow: finalBottomRow };
+  }, [columns]);
+  
+  const getAlignmentClass = (align?: 'left' | 'center' | 'right') => {
+    switch (align) {
+        case 'center': return 'text-center';
+        case 'right': return 'text-right';
+        case 'left':
+        default: return 'text-left';
+    }
+  };
 
-  const filteredData = useMemo(() => {
-    if (!data) return [];
-    return data.filter(item => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        const itemValue = String(item[key as keyof T] ?? '').toLowerCase();
-        return itemValue.includes(String(value).toLowerCase());
-      });
-    });
-  }, [data, filters]);
+  const getHeaderGroupClass = (groupName: string, level: 1 | 2) => {
+    const name = (groupName || '').toLowerCase();
+    
+    // byU (byu.id blue)
+    if (name === 'byu') {
+        return level === 1 ? 'bg-blue-700 border-blue-800' : 'bg-blue-600 border-blue-700';
+    }
 
-  const sortedData = useMemo(() => {
-    if (!sortConfig) return filteredData;
-    return [...filteredData].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [filteredData, sortConfig]);
+    // Specific product/category colors
+    if (name.startsWith('qty')) { // Handle 'QTY CVM' and 'QTY Super Seru'
+        const product = name.split(' ')[1];
+        if (product === 'cvm') return level === 1 ? 'bg-red-800 border-red-900' : 'bg-red-700 border-red-800';
+        if (product === 'superseru') return level === 1 ? 'bg-green-700 border-green-800' : 'bg-green-600 border-green-700';
+    }
+     if (name.startsWith('revenue')) { // Handle 'Revenue CVM' and 'Revenue Super Seru'
+        const product = name.split(' ')[1];
+        if (product === 'cvm') return level === 1 ? 'bg-orange-700 border-orange-800' : 'bg-orange-600 border-orange-700';
+        if (product === 'superseru') return level === 1 ? 'bg-teal-700 border-teal-800' : 'bg-teal-600 border-teal-700';
+    }
+    if (name === 'inject vf' || name === 'super seru') {
+        return level === 1 ? 'bg-green-700 border-green-600' : 'bg-green-600 border-green-500';
+    }
+    if (name === 'st') {
+        return level === 1 ? 'bg-blue-700 border-blue-600' : 'bg-blue-600 border-blue-500';
+    }
+    if (name === 'recharge' || name === 'total omzet') {
+        return level === 1 ? 'bg-indigo-700 border-indigo-600' : 'bg-indigo-600 border-indigo-500';
+    }
 
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return sortedData.slice(startIndex, startIndex + itemsPerPage);
-  }, [sortedData, currentPage, itemsPerPage]);
+    // Total columns
+    if (name.includes('total')) {
+        return level === 1 ? 'bg-gray-700 border-gray-800' : 'bg-gray-600 border-gray-700';
+    }
 
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+    // Default for Simpati, CVM, and any other Telkomsel-related group (Telkomsel Red)
+    return level === 1 ? 'bg-red-800 border-red-900' : 'bg-red-700 border-red-800';
+  };
+
 
   return (
-    <div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-white uppercase bg-red-800 whitespace-nowrap">
+    <div className="max-h-[70vh] overflow-auto border-t rounded-lg">
+      <table className="w-full text-sm text-gray-500">
+        <thead className="text-xs text-white uppercase bg-red-800 whitespace-nowrap sticky top-0 z-10">
+          {headerGroups.hasGrouping && (
             <tr>
-              {columns.map((col) => (
-                <th key={col.id ?? col.accessorKey as string} scope="col" className="px-4 py-3">
-                  <div 
-                    className={`flex items-center gap-2 ${col.enableSorting ? 'cursor-pointer select-none' : ''}`}
-                    onClick={() => col.enableSorting && handleSort(col.accessorKey as keyof T)}
-                  >
-                    {col.header}
-                    {col.enableSorting && <SortIcon direction={sortConfig?.key === col.accessorKey ? sortConfig.direction : null} />}
-                  </div>
+              {headerGroups.topRow.map((group, index) => (
+                <th key={index} scope="col" colSpan={group.colSpan} rowSpan={group.rowSpan} className={`px-4 py-3 align-middle text-center border-x ${getHeaderGroupClass(group.header, 1)}`}>
+                  {group.rowSpan === 2 && group.originalColumn ? (
+                    <div 
+                      className={`flex items-center justify-center gap-2 ${group.originalColumn.enableSorting ? 'cursor-pointer select-none' : ''}`}
+                      onClick={() => {
+                        if (group.originalColumn?.enableSorting) onSort(group.originalColumn.accessorKey);
+                      }}
+                    >
+                      {group.header}
+                      {group.originalColumn.enableSorting && <SortIcon direction={sortConfig?.key === group.originalColumn.accessorKey ? sortConfig.direction : null} />}
+                    </div>
+                  ) : group.header}
                 </th>
               ))}
             </tr>
-            <tr className="bg-white">
-              {columns.map((col) => (
-                <th key={`filter-${col.id ?? col.accessorKey as string}`} className="p-2 font-normal">
-                  {col.enableFiltering && col.filterType === 'select' ? (
-                     <select
-                        onChange={(e) => handleFilterChange(col.accessorKey as keyof T, e.target.value)}
-                        className="w-full text-sm p-1 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"
-                      >
-                        <option value="">-- Pilih --</option>
-                        {uniqueOptions[col.accessorKey as string] && Array.from(uniqueOptions[col.accessorKey as string]).map(option => (
-                          <option key={option} value={option}>{option || 'N/A'}</option>
-                        ))}
-                      </select>
-                  ) : col.enableFiltering ? (
-                    <input
-                      type="text"
-                      placeholder={`Cari ${col.header}...`}
-                      onChange={(e) => handleFilterChange(col.accessorKey as keyof T, e.target.value)}
+          )}
+          <tr>
+            {(headerGroups.hasGrouping ? headerGroups.bottomRow : columns).map((col) => (
+              <th key={col.id ?? col.accessorKey as string} scope="col" className={`px-4 py-3 align-middle border-x ${getHeaderGroupClass(col.group ?? col.header, 2)}`}>
+                <div 
+                  className={`flex items-center justify-center gap-2 ${col.enableSorting ? 'cursor-pointer select-none' : ''}`}
+                  onClick={() => col.enableSorting && onSort(col.accessorKey as keyof T)}
+                >
+                  {col.header}
+                  {col.enableSorting && <SortIcon direction={sortConfig?.key === col.accessorKey ? sortConfig.direction : null} />}
+                </div>
+              </th>
+            ))}
+          </tr>
+          <tr className="bg-white">
+            {columns.map((col) => (
+              <th key={`filter-${col.id ?? col.accessorKey as string}`} className="p-2 font-normal">
+                {col.enableFiltering && col.filterType === 'select' ? (
+                  <select
+                      value={filters[col.accessorKey as string] || ''}
+                      onChange={(e) => onFilterChange(col.accessorKey as keyof T, e.target.value)}
                       className="w-full text-sm p-1 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"
-                    />
-                  ) : null}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.length > 0 ? (
-                paginatedData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
-                    {columns.map((col) => (
-                      <td key={col.id ?? col.accessorKey as string} className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                        {col.cell ? col.cell(row) : String(row[col.accessorKey as keyof T] ?? '')}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-            ) : (
-                <tr>
-                    <td colSpan={columns.length} className="text-center py-10 text-gray-500">
-                        Tidak ada data yang tersedia.
+                    >
+                      <option value="">-- Pilih --</option>
+                      {uniqueOptions[col.accessorKey as string] && Array.from(uniqueOptions[col.accessorKey as string]).sort().map(option => (
+                        <option key={option} value={option}>{option || 'N/A'}</option>
+                      ))}
+                    </select>
+                ) : col.enableFiltering ? (
+                  <input
+                    type="text"
+                    placeholder={`Cari ${col.header}...`}
+                    value={filters[col.accessorKey as string] || ''}
+                    onChange={(e) => onFilterChange(col.accessorKey as keyof T, e.target.value)}
+                    className="w-full text-sm p-1 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 bg-white text-gray-900"
+                  />
+                ) : null}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 ? (
+              data.map((row, rowIndex) => (
+                <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
+                  {columns.map((col) => (
+                    <td key={col.id ?? col.accessorKey as string} className={`px-4 py-2 text-gray-800 whitespace-nowrap ${getAlignmentClass(col.align)}`}>
+                      {col.cell ? col.cell(row) : String(row[col.accessorKey as keyof T] ?? '')}
                     </td>
+                  ))}
                 </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      {/* Pagination */}
-       <div className="flex flex-col items-center gap-4 p-4 border-t sm:flex-row sm:justify-between">
-            <span className="text-sm text-gray-700">
-                Showing <span className="font-semibold">{Math.min(paginatedData.length, sortedData.length > 0 ? 1 : 0) > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</span> to <span className="font-semibold">{Math.min(currentPage * itemsPerPage, sortedData.length)}</span> of <span className="font-semibold">{sortedData.length}</span> results
-            </span>
-            <div className="flex items-center space-x-2">
-                <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    Previous
-                </button>
-                <button
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                    disabled={currentPage === totalPages || totalPages === 0}
-                    className="px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    Next
-                </button>
-            </div>
-        </div>
+              ))
+          ) : (
+              <tr>
+                  <td colSpan={columns.length} className="text-center py-10 text-gray-500">
+                      Tidak ada data yang tersedia.
+                  </td>
+              </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -100,13 +99,13 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, isSideba
     })
     .filter((item): item is MenuItem => item !== null);
 
-  const baseLinkClasses = "flex items-center w-full p-3 text-sm text-gray-500 rounded-lg transition-colors duration-200 hover:bg-red-50 hover:text-red-600 group";
+  const baseLinkClasses = "flex items-center w-full py-3.5 px-4 text-gray-500 rounded-lg transition-colors duration-200 hover:bg-red-50 hover:text-red-600 group";
   const activeLinkClasses = "bg-red-50 text-red-600 font-semibold";
 
   return (
     <>
       <div className={`fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`} onClick={() => setSidebarOpen(false)}></div>
-      <div ref={sidebarRef} className={`bg-white text-gray-800 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 flex flex-col fixed inset-y-0 left-0 lg:relative transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+      <div ref={sidebarRef} className={`bg-white text-gray-800 border-r border-gray-200 transition-all duration-300 ease-in-out z-30 flex flex-col fixed inset-y-0 left-0 lg:relative transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 ${isSidebarCollapsed ? 'w-20' : 'w-72'}`}>
         
         <div className={`flex items-center h-18 px-4 mb-4 flex-shrink-0 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           <Link to="/dashboard" className={`flex items-center space-x-2 overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'w-0' : 'w-auto'}`}>
@@ -122,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, isSideba
           </button>
         </div>
 
-        <nav className={`flex-1 px-4 space-y-2 ${isSidebarCollapsed ? '' : 'overflow-y-auto'}`}>
+        <nav className={`flex-1 px-4 space-y-1 ${isSidebarCollapsed ? '' : 'overflow-y-auto'}`}>
           {accessibleMenuItems.map((item) => {
             if (item.children) {
               return (
@@ -137,13 +136,13 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, isSideba
                     className={`${baseLinkClasses} justify-between`}
                   >
                     <div className="flex items-center">
-                      {item.icon && <item.icon className={`h-5 w-5 shrink-0 ${!isSidebarCollapsed ? 'mr-3' : ''}`} />}
-                      {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
+                      {item.icon && <item.icon className={`h-6 w-6 shrink-0 ${!isSidebarCollapsed ? 'mr-4' : ''}`} />}
+                      {!isSidebarCollapsed && <span className="truncate text-base font-medium">{item.name}</span>}
                     </div>
                     {!isSidebarCollapsed && <ChevronDownIcon className={`transform transition-transform duration-200 ${openMenus[item.name] ? 'rotate-180' : ''}`} />}
                   </button>
                   {!isSidebarCollapsed && openMenus[item.name] && (
-                    <div className="pl-6 mt-1 space-y-1">
+                    <div className="pl-8 mt-1 space-y-1">
                       {item.children.map(child => (
                         <NavLink
                           key={child.path}
@@ -194,8 +193,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, isSideba
                 title={isSidebarCollapsed ? item.name : ''}
               >
                  <div className={`absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-red-600 ${location.pathname.startsWith(item.path!) ? 'opacity-100' : 'opacity-0'}`}></div>
-                {item.icon && <item.icon className={`h-5 w-5 shrink-0 ${!isSidebarCollapsed ? 'mr-3' : ''}`} />}
-                {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
+                {item.icon && <item.icon className={`h-6 w-6 shrink-0 ${!isSidebarCollapsed ? 'mr-4' : ''}`} />}
+                {!isSidebarCollapsed && <span className="truncate text-base font-medium">{item.name}</span>}
               </NavLink>
             )
           })}

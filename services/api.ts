@@ -1,4 +1,17 @@
-import { User, Outlet, OutletData, UserRole, UserFormData } from '../types';
+
+import { User, Outlet, OutletData, UserRole, UserFormData, StockPerdanaData, StockPerdanaDetailData, StockVoucherData, StockVoucherDetailData, OmzetOutletData, SalesPlanPerdanaData, SalesPlanVoucherData, SalesPlanCvmData, SellThruNotaData, SellThruDigiposData, PenjualanD2CData } from '../types';
+import { outletData } from '../data/outletData';
+import { stockPerdanaData } from '../data/stockPerdanaData';
+import { stockPerdanaDetailData } from '../data/stockPerdanaDetailData';
+import { stockVoucherData } from '../data/stockVoucherData';
+import { stockVoucherDetailData } from '../data/stockVoucherDetailData';
+import { omzetOutletData } from '../data/omzetOutletData';
+import { salesPlanPerdanaData } from '../data/salesPlanPerdanaData';
+import { salesPlanVoucherData } from '../data/salesPlanVoucherData';
+import { salesPlanCvmData } from '../data/salesPlanCvmData';
+import { sellThruNotaPerdanaData, sellThruNotaVoucherData } from '../data/sellThruNotaData';
+import { sellThruDigiposPerdanaData, sellThruDigiposVoucherData } from '../data/sellThruDigiposData';
+import { penjualanD2CData } from '../data/penjualanD2CData';
 
 const API_BASE_URL = '/api'; // Proxy to your backend server
 
@@ -61,9 +74,73 @@ export const logout = (): void => {
 
 // --- Data Services ---
 export const getOutlets = (): Promise<OutletData[]> => {
-    console.log("Fetching outlets... (simulated - returning empty array)");
-    return Promise.resolve([]);
+    console.log("Fetching outlets... (simulated - returning data from data/outletData.ts)");
+    return Promise.resolve(outletData);
 };
+
+export const getStockPerdanaSummary = (): Promise<StockPerdanaData[]> => {
+    console.log("Fetching stock perdana summary... (simulated - returning data from data/stockPerdanaData.ts)");
+    return Promise.resolve(stockPerdanaData);
+};
+
+export const getStockPerdanaDetail = (): Promise<StockPerdanaDetailData[]> => {
+    console.log("Fetching stock perdana detail... (simulated - returning data from data/stockPerdanaDetailData.ts)");
+    return Promise.resolve(stockPerdanaDetailData);
+};
+
+export const getStockVoucherSummary = (): Promise<StockVoucherData[]> => {
+    console.log("Fetching stock voucher summary... (simulated - returning data from data/stockVoucherData.ts)");
+    return Promise.resolve(stockVoucherData);
+};
+
+export const getStockVoucherDetail = (): Promise<StockVoucherDetailData[]> => {
+    console.log("Fetching stock voucher detail... (simulated - returning data from data/stockVoucherDetailData.ts)");
+    return Promise.resolve(stockVoucherDetailData);
+};
+
+export const getOmzetOutletDetail = (): Promise<OmzetOutletData[]> => {
+    console.log("Fetching omzet outlet detail... (simulated - returning data from data/omzetOutletData.ts)");
+    return Promise.resolve(omzetOutletData);
+};
+
+export const getSalesPlanPerdanaData = (): Promise<SalesPlanPerdanaData[]> => {
+    console.log("Fetching sales plan perdana data... (simulated - returning data from data/salesPlanPerdanaData.ts)");
+    return Promise.resolve(salesPlanPerdanaData);
+};
+
+export const getSalesPlanVoucherData = (): Promise<SalesPlanVoucherData[]> => {
+    console.log("Fetching sales plan voucher data... (simulated - returning data from data/salesPlanVoucherData.ts)");
+    return Promise.resolve(salesPlanVoucherData);
+};
+
+export const getSalesPlanCvmData = (): Promise<SalesPlanCvmData[]> => {
+    console.log("Fetching sales plan cvm data... (simulated - returning data from data/salesPlanCvmData.ts)");
+    return Promise.resolve(salesPlanCvmData);
+};
+
+export const getSellThruNotaPerdana = (): Promise<SellThruNotaData[]> => {
+    console.log("Fetching ST Nota Perdana data... (simulated)");
+    return Promise.resolve(sellThruNotaPerdanaData);
+};
+export const getSellThruNotaVoucher = (): Promise<SellThruNotaData[]> => {
+    console.log("Fetching ST Nota Voucher data... (simulated)");
+    return Promise.resolve(sellThruNotaVoucherData);
+};
+
+export const getSellThruDigiposPerdana = (): Promise<SellThruDigiposData[]> => {
+    console.log("Fetching ST Digipos Perdana data... (simulated)");
+    return Promise.resolve(sellThruDigiposPerdanaData);
+};
+export const getSellThruDigiposVoucher = (): Promise<SellThruDigiposData[]> => {
+    console.log("Fetching ST Digipos Voucher data... (simulated)");
+    return Promise.resolve(sellThruDigiposVoucherData);
+};
+
+export const getPenjualanD2C = (): Promise<PenjualanD2CData[]> => {
+    console.log("Fetching Penjualan D2C data... (simulated)");
+    return Promise.resolve(penjualanD2CData);
+};
+
 
 // --- Form Services ---
 export const lookupOutlet = (outletId: string): Promise<Outlet | null> => {
