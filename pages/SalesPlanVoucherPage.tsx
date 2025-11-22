@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { getSalesPlanVoucherData } from '../services/api';
 import { SalesPlanVoucherData, SalesPlanPeriodData, SalesPlanProductData } from '../types';
@@ -169,7 +170,8 @@ const SalesPlanVoucherPage: React.FC = () => {
                 return acc;
             }, {} as Record<string, SalesPlanVoucherData[]>);
 
-            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]) => {
+            // FIX: Explicitly type arguments in map to prevent unknown type errors
+            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]: [string, SalesPlanVoucherData[]]) => {
                 const pjp = new Set(outlets.map(o => o.ID_DIGIPOS)).size; // Unique outlets
                 return {
                     type: 'sf' as const,

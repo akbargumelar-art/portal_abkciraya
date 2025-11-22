@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,6 +34,15 @@
         cursor: pointer;
         /* This filter converts the default black icon to a darker red color matching the theme */
         filter: invert(11%) sepia(98%) saturate(4643%) hue-rotate(334deg) brightness(81%) contrast(106%);
+      }
+      
+      /* Page Transition Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
       }
     </style>
   <script type="importmap">

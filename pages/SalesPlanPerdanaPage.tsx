@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { getSalesPlanPerdanaData } from '../services/api';
 import { SalesPlanPerdanaData, SalesPlanPeriodData, SalesPlanProductData } from '../types';
@@ -161,7 +162,8 @@ const SalesPlanPerdanaPage: React.FC = () => {
                 return acc;
             }, {} as Record<string, SalesPlanPerdanaData[]>);
 
-            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]) => {
+            // FIX: Explicitly type arguments in map to prevent unknown type errors
+            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]: [string, SalesPlanPerdanaData[]]) => {
                 const pjp = new Set(outlets.map(o => o.ID_DIGIPOS)).size; // Unique outlets
                 return {
                     type: 'sf' as const,

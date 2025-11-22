@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { getSalesPlanCvmData } from '../services/api';
 import { SalesPlanCvmData, SalesPlanPeriodData, SalesPlanProductData } from '../types';
@@ -10,7 +11,7 @@ import CollapsibleSection from '../components/CollapsibleSection';
 declare var XLSX: any;
 
 const DownloadIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
     <polyline points="7 10 12 15 17 10"/>
     <line x1="12" y1="15" x2="12" y2="3"/>
@@ -181,7 +182,8 @@ const SalesPlanCvmPage: React.FC = () => {
                 return acc;
             }, {} as Record<string, ProcessedData[]>);
 
-            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]) => {
+            // FIX: Explicitly type arguments in map to prevent unknown type errors
+            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfName, outlets]: [string, ProcessedData[]]) => {
                 const pjp = new Set(outlets.map(o => o.ID_DIGIPOS)).size;
                 return {
                     type: 'sf' as const,

@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { getOmzetOutletDetail } from '../services/api';
 import { OmzetOutletData } from '../types';
@@ -119,7 +120,8 @@ const OmzetOutletPage: React.FC = () => {
                 return acc;
             }, {} as Record<string, OmzetOutletData[]>);
 
-            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfCode, outlets]) => {
+            // FIX: Explicitly type the destructured arguments to prevent 'unknown' type errors.
+            const sfRows: SummaryRow[] = Object.entries(groupedBySf).map(([sfCode, outlets]: [string, OmzetOutletData[]]) => {
                 const pjp = outlets.length;
                 const oaFm1 = outlets.filter(o => o.TOTAL_OMZET_FM_1 > 0).length;
                 const oaM1 = outlets.filter(o => o.TOTAL_OMZET_M_1 > 0).length;
